@@ -87,7 +87,8 @@ function updateTimer() {
         draw();
         updateTimer();
     }, 1000);
-
+ setInterval(updateTimer, 1000);
+});
 
         
     
