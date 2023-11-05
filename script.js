@@ -27,7 +27,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             ctx.strokeStyle = 'black';
             ctx.strokeRect(snake[i].x * boxSize, snake[i].y * boxSize, boxSize, boxSize);
-        }
+        } 
+         ctx.fillStyle = food.color;
+        ctx.fillRect(food.x * boxSize, food.y * boxSize, boxSize, boxSize);
+    }
+
+    function update() {
+        const headX = snake[0].x;
+        const headY = snake[0].y;
+
+        if (direction === 'right') headX++;
+        if (direction === 'left') headX--;
+        if (direction === 'up') headY--;
+        if (direction === 'down') headY++;
+    const newHead = {x: headX, y: headY};
+
+        if (headX === food.x && headY === food.y) {
+            food = {x: Math.floor(Math.random() * canvasSize), y: Math.floor(Math.random() * canvasSize)};
+            food.color = getRandomColor();
+            score++;
+        } else {
+
+        
+    
 
 
 
