@@ -47,6 +47,27 @@ document.addEventListener('DOMContentLoaded', () => {
             food.color = getRandomColor();
             score++;
         } else {
+            snake.pop();
+        }
+
+        snake.unshift(newHead);
+    }
+
+    function checkCollision() {
+        const head = snake[0];
+        for (let i = 1; i < snake.length; i++) {
+            if (head.x === snake[i].x && head.y === snake[i].y) {
+                clearInterval(game);
+                alert('Game Over! Pontuação: ' + score);
+            }
+        }
+
+        if (head.x < 0 || head.x >= canvasSize || head.y < 0 || head.y >= canvasSize) {
+            clearInterval(game);
+            alert('Game Over! Pontuação: ' + score);
+        }
+    }
+
 
         
     
