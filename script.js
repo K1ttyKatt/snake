@@ -67,6 +67,26 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Game Over! Pontuação: ' + score);
         }
     }
+function updateTimer() {
+        timer++;
+        const minutes = Math.floor(timer / 60);
+        const seconds = timer % 60;
+        document.getElementById('timer').textContent = ${minutes}:${String(seconds).padStart(2, '0')};
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.keyCode === 37 && direction !== 'right') direction = 'left';
+        if (e.keyCode === 38 && direction !== 'down') direction = 'up';
+        if (e.keyCode === 39 && direction !== 'left') direction = 'right';
+        if (e.keyCode === 40 && direction !== 'up') direction = 'down';
+    });
+
+    const game = setInterval(() => {
+        update();
+        checkCollision();
+        draw();
+        updateTimer();
+    }, 1000);
 
 
         
