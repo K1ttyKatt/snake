@@ -1,23 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo da Cobrinha</title>
     <link rel="stylesheet" href="style.css">
-    
+    <title>Game</title>
 </head>
-
 <body>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="400" height="400"></canvas>
-        <div class="info">
-            <span>Maçãs Comidas: <span id="score">0</span></span>
-            <span>Tempo: <span id="timer">0:00</span></span>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <div class="game-container" id="game-container">
+        <div id="game">
+            <p id="timer">Time: 0</p>
+            <p id="food">Food: </p>
+            <span>By Vitoria Alves</span>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
-    
 </html>
