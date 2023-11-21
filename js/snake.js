@@ -1,17 +1,12 @@
-/**
-* @module Snake
-* @class SNAKE
+/*
+JavaScript Snake
+Primeira Versão Do Jogo da Cobra - Vitoria Alves
+https://github.com/K1ttyKatt/snake
 */
 
 var SNAKE = SNAKE || {};
-window.SNAKE = SNAKE; 
-/**
-* @method addEventListener
-* @param {Object} obj 
-* @param {String} event 
-* @param {Function} funct 
-* @param {Boolean} evtCapturing
-*/
+window.SNAKE = SNAKE;
+
 SNAKE.addEventListener = (function() {
     if (window.addEventListener) {
         return function(obj, event, funct, evtCapturing) {
@@ -23,14 +18,6 @@ SNAKE.addEventListener = (function() {
         };
     }
 })();
-
-/**
-* @method removeEventListener
-* @param {Object} obj 
-* @param {String} event 
-* @param {Function} function
-* @param {Boolean} evtCapturing
-*/
 
 SNAKE.removeEventListener = (function() {
     if (window.removeEventListener) {
@@ -44,13 +31,6 @@ SNAKE.removeEventListener = (function() {
     }
 })();
 
-/**
-*
-* @class Snake
-* @constructor
-* @namespace SNAKE
-* @param {Object} config 
-*/
 SNAKE.Snake = SNAKE.Snake || (function() {
 
     var instanceNumber = 0;
@@ -67,6 +47,7 @@ SNAKE.Snake = SNAKE.Snake || (function() {
         this.prev = null;
     };
 
+   
     function getNextHighestZIndex(myObj) {
         var highestIndex = 0,
             currentIndex = 0,
@@ -83,6 +64,7 @@ SNAKE.Snake = SNAKE.Snake || (function() {
         }
         return(highestIndex+1);
     }
+
     return function(config) {
 
         if (!config||!config.playingBoard) {return;}
@@ -150,6 +132,7 @@ SNAKE.Snake = SNAKE.Snake || (function() {
         me.snakeHead.elm.id = "snake-snakehead-alive";
         me.snakeHead.elm.className += " snake-snakebody-alive";
 
+
         function createSnakeElement() {
             var tempNode = document.createElement("div");
             tempNode.className = "snake-snakebody-block";
@@ -204,17 +187,10 @@ SNAKE.Snake = SNAKE.Snake || (function() {
         me.getPaused = function() {
             return isPaused;
         };
-
-        /**
-        * 
-        * @method handleArrowKeys
-        * @param {Number} keyNum 
-        */
         me.handleArrowKeys = function(keyNum) {
              if (isDead || (isPaused && !config.premoveOnPause)) {return;}
 
             var snakeLength = me.snakeLength;
-
             let directionFound = -1;
 
             switch (keyNum) {
@@ -235,27 +211,22 @@ SNAKE.Snake = SNAKE.Snake || (function() {
                     directionFound = 2;
                     break;
             }
-            if (currentDirection !== lastMove)  
+            if (currentDirection !== lastMove)
             {
                 preMove = directionFound;
             }
             if (Math.abs(directionFound - lastMove) !== 2 && (isFirstMove || isPaused) || isFirstGameMove ) 
-            {
                 currentDirection = directionFound;
                 isFirstMove = false;
                 isFirstGameMove = false;
             }
         };
 
-        /**
-        * 
-        * @method go
-        */
         me.go = function() {
 
             var oldHead = me.snakeHead,
                 newHead = me.snakeTail,
-                grid = playingBoard.grid; // cache grid for quicker lookup
+                grid = playingBoard.grid; 
 
             if (isPaused === true) {
                 setTimeout(function(){me.go();}, snakeSpeed);
@@ -265,16 +236,15 @@ SNAKE.Snake = SNAKE.Snake || (function() {
             me.snakeTail = newHead.prev;
             me.snakeHead = newHead;
 
-            // clear the old board position
             if ( grid[newHead.row] && grid[newHead.row][newHead.col] ) {
                 grid[newHead.row][newHead.col] = 0;
             }
 
             if (currentDirection !== -1){
                 lastMove = currentDirection;
-                if (preMove !== -1)  // If the user queued up another move after the current one
+                if (preMove !== -1)
                 {
-                    currentDirection = preMove;  // Execute that move next time (unless overwritten)
+                    currentDirection = preMove;  
                     preMove = -1;
                 }
             }
@@ -295,10 +265,6 @@ SNAKE.Snake = SNAKE.Snake || (function() {
                 newHead.elm.id="snake-snakehead-alive";
                 oldHead.elm.id = "";
             }
-            
-            
-
-            // check the new spot the snake moved into
 
             if (grid[newHead.row][newHead.col] === 0) {
                 grid[newHead.row][newHead.col] = 1;
@@ -314,13 +280,6 @@ SNAKE.Snake = SNAKE.Snake || (function() {
                 setTimeout(function(){me.go();}, snakeSpeed);
             }
         };
-
-        /**
-        * This method is called when it is determined that the snake has eaten some food.
-        * @method eatFood
-        * @return {bool} Whether a new food was able to spawn (true)
-        *   or not (false) after the snake eats food.
-        */
         me.eatFood = function() {
             if (blockPool.length <= growthIncr) {
                 createBlocks(growthIncr*2);
@@ -347,8 +306,6 @@ SNAKE.Snake = SNAKE.Snake || (function() {
                 return false;
             }
 
-            //Checks if the current selected option is that of "Rush"
-            //If so, "increase" the snake speed
             var selectDropDown = document.getElementById("selectMode");
             var selectedOption = selectDropDown.options[selectDropDown.selectedIndex];
 
@@ -360,30 +317,17 @@ SNAKE.Snake = SNAKE.Snake || (function() {
             return true;
         };
 
-        /**
-        * This method handles what happens when the snake dies.
-        * @method handleDeath
-        */
         me.handleDeath = function() {
-            //Reset speed
             var selectedSpeed = document.getElementById("selectMode").value;
             snakeSpeed = parseInt(selectedSpeed);
             
             handleEndCondition(playingBoard.handleDeath);
         };
 
-        /**
-        * This method handles what happens when the snake wins.
-        * @method handleDeath
-        */
         me.handleWin = function() {
             handleEndCondition(playingBoard.handleWin);
         };
 
-        /**
-        * This method sets a flag that lets the snake be alive again.
-        * @method rebirth
-        */
         me.rebirth = function() {
             isDead = false;
             isFirstMove = true;
@@ -391,10 +335,6 @@ SNAKE.Snake = SNAKE.Snake || (function() {
             preMove = -1;
         };
 
-        /**
-        * This method reset the snake so it is ready for a new game.
-        * @method reset
-        */
         me.reset = function() {
             if (isDead === false) {return;}
 
@@ -431,10 +371,6 @@ SNAKE.Snake = SNAKE.Snake || (function() {
             me.snakeHead.elm.style.left = me.snakeHead.xPos + "px";
             me.snakeHead.elm.style.top = me.snakeHead.yPos + "px";
         };
-
-        // ---------------------------------------------------------------------
-        // Initialize
-        // ---------------------------------------------------------------------
         createBlocks(growthIncr*2);
         xPosShift[0] = 0;
         xPosShift[1] = playingBoard.getBlockWidth();
@@ -445,42 +381,18 @@ SNAKE.Snake = SNAKE.Snake || (function() {
         yPosShift[1] = 0;
         yPosShift[2] = playingBoard.getBlockHeight();
         yPosShift[3] = 0;
-    };
-})();
-
-/**
-* This class manages the food which the snake will eat.
-* @class Food
-* @constructor
-* @namespace SNAKE
-* @param {Object} config The configuration object for the class. Contains playingBoard (the SNAKE.Board that this food resides in).
-*/
+    }
+)();
 
 SNAKE.Food = SNAKE.Food || (function() {
-
-    // -------------------------------------------------------------------------
-    // Private static variables and methods
-    // -------------------------------------------------------------------------
-
     var instanceNumber = 0;
 
     function getRandomPosition(x, y){
         return Math.floor(Math.random()*(y+1-x)) + x;
     }
-
-    // -------------------------------------------------------------------------
-    // Contructor + public and private definitions
-    // -------------------------------------------------------------------------
-
-    /*
-        config options:
-            playingBoard - the SnakeBoard that this object belongs too.
-    */
     return function(config) {
 
         if (!config||!config.playingBoard) {return;}
-
-        // ----- private variables -----
 
         var me = this;
         var playingBoard = config.playingBoard;
@@ -496,23 +408,11 @@ SNAKE.Food = SNAKE.Food || (function() {
         elmFood.style.top = "-1000px";
         playingBoard.getBoardContainer().appendChild(elmFood);
 
-        // ----- public methods -----
-
-        /**
-        * @method getFoodElement
-        * @return {DOM Element} The div the represents the food.
-        */
         me.getFoodElement = function() {
             return elmFood;
         };
 
-        /**
-        * Randomly places the food onto an available location on the playing board.
-        * @method randomlyPlaceFood
-        * @return {bool} Whether a food was able to spawn (true) or not (false).
-        */
         me.randomlyPlaceFood = function() {
-            // if there exist some food, clear its presence from the board
             if (playingBoard.grid[fRow] && playingBoard.grid[fRow][fColumn] === playingBoard.getGridFoodValue()){
                 playingBoard.grid[fRow][fColumn] = 0;
             }
@@ -526,9 +426,6 @@ SNAKE.Food = SNAKE.Food || (function() {
                 row = getRandomPosition(1, maxRows);
                 col = getRandomPosition(1, maxCols);
 
-                // in some cases there may not be any room to put food anywhere
-                // instead of freezing, exit out (and return false to indicate
-                // that the player beat the game)
                 numTries++;
                 if (numTries > 20000){
                     return false;
@@ -544,24 +441,10 @@ SNAKE.Food = SNAKE.Food || (function() {
         };
     };
 })();
-
-/**
-* This class manages playing board for the game.
-* @class Board
-* @constructor
-* @namespace SNAKE
-* @param {Object} config The configuration object for the class. Set fullScreen equal to true if you want the game to take up the full screen, otherwise, set the top, left, width and height parameters.
-*/
-
 SNAKE.Board = SNAKE.Board || (function() {
-
-    // -------------------------------------------------------------------------
-    // Private static variables and methods
-    // -------------------------------------------------------------------------
 
     var instanceNumber = 0;
 
-    // this function is adapted from the example at http://greengeckodesign.com/blog/2007/07/get-highest-z-index-in-javascript.html
     function getNextHighestZIndex(myObj) {
         var highestIndex = 0,
             currentIndex = 0,
@@ -579,42 +462,31 @@ SNAKE.Board = SNAKE.Board || (function() {
         return(highestIndex+1);
     }
 
-    /*
-        This function returns the width of the available screen real estate that we have
-    */
     function getClientWidth(){
         var myWidth = 0;
         if( typeof window.innerWidth === "number" ) {
-            myWidth = window.innerWidth;//Non-IE
+            myWidth = window.innerWidth;
         } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
-            myWidth = document.documentElement.clientWidth;//IE 6+ in 'standards compliant mode'
+            myWidth = document.documentElement.clientWidth;
         } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
-            myWidth = document.body.clientWidth;//IE 4 compatible
+            myWidth = document.body.clientWidth;
         }
         return myWidth;
     }
-    /*
-        This function returns the height of the available screen real estate that we have
-    */
     function getClientHeight(){
         var myHeight = 0;
         if( typeof window.innerHeight === "number" ) {
-            myHeight = window.innerHeight;//Non-IE
+            myHeight = window.innerHeight;
         } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
-            myHeight = document.documentElement.clientHeight;//IE 6+ in 'standards compliant mode'
+            myHeight = document.documentElement.clientHeight;
         } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
-            myHeight = document.body.clientHeight;//IE 4 compatible
+            myHeight = document.body.clientHeight;
         }
         return myHeight;
     }
 
-    // -------------------------------------------------------------------------
-    // Contructor + public and private definitions
-    // -------------------------------------------------------------------------
-
     return function(inputConfig) {
 
-        // --- private variables ---
         var me = this,
             myId = instanceNumber++,
             config = inputConfig || {},
@@ -622,21 +494,17 @@ SNAKE.Board = SNAKE.Board || (function() {
             MAX_BOARD_ROWS = 250,
             blockWidth = 20,
             blockHeight = 20,
-            GRID_FOOD_VALUE = -1, // the value of a spot on the board that represents snake food, MUST BE NEGATIVE
+            GRID_FOOD_VALUE = -1,
             myFood,
             mySnake,
-            boardState = 1, // 0: in active; 1: awaiting game start; 2: playing game
+            boardState = 1, 
             myKeyListener,
-            isPaused = false,//note: both the board and the snake can be paused
-            // Board components
+            isPaused = false,
+
             elmContainer, elmPlayingField, elmAboutPanel, elmLengthPanel, elmHighscorePanel, elmWelcome, elmTryAgain, elmWin, elmPauseScreen;
 
-        // --- public variables ---
-        me.grid = [];
 
-        // ---------------------------------------------------------------------
-        // private functions
-        // ---------------------------------------------------------------------
+        me.grid = [];
 
         function createBoardElements() {
             elmPlayingField = document.createElement("div");
@@ -653,7 +521,7 @@ SNAKE.Board = SNAKE.Board || (function() {
 
             elmAboutPanel = document.createElement("div");
             elmAboutPanel.className = "snake-panel-component";
-            elmAboutPanel.innerHTML = "<a href='http://patorjk.com/blog/software/' class='snake-link'>more patorjk.com apps</a> - <a href='https://github.com/patorjk/JavaScript-Snake' class='snake-link'>source code</a> - <a href='https://www.youtube.com/channel/UCpcCLm9y6CsjHUrCvJHYHUA' class='snake-link'>pat's youtube</a>";
+            elmAboutPanel.innerHTML = "<a href='https://github.com/K1ttyKatt/snake' class='snake-link'>more patorjk.com apps</a> - <a href='https://github.com/K1ttyKatt/snake' class='snake-link'>source code</a> - <a href='https://github.com/K1ttyKatt/snake' class='snake-link'>pat's youtube</a>";
 
             elmLengthPanel = document.createElement("div");
             elmLengthPanel.className = "snake-panel-component";
@@ -784,9 +652,6 @@ SNAKE.Board = SNAKE.Board || (function() {
             me.setBoardState(0);
         }
 
-        // ---------------------------------------------------------------------
-        // public functions
-        // ---------------------------------------------------------------------
 
         me.setPaused = function(val) {
             isPaused = val;
@@ -800,51 +665,29 @@ SNAKE.Board = SNAKE.Board || (function() {
         me.getPaused = function() {
             return isPaused;
         };
-
-        /**
-        * Resets the playing board for a new game.
-        * @method resetBoard
-        */
         me.resetBoard = function() {
             SNAKE.removeEventListener(elmContainer, "keydown", myKeyListener, false);
             mySnake.reset();
             elmLengthPanel.innerHTML = "Length: 1";
             me.setupPlayingField();
         };
-        /**
-        * Gets the current state of the playing board. There are 3 states: 0 - Welcome or Try Again dialog is present. 1 - User has pressed "Start Game" on the Welcome or Try Again dialog but has not pressed an arrow key to move the snake. 2 - The game is in progress and the snake is moving.
-        * @method getBoardState
-        * @return {Number} The state of the board.
-        */
+
         me.getBoardState = function() {
             return boardState;
         };
-        /**
-        * Sets the current state of the playing board. There are 3 states: 0 - Welcome or Try Again dialog is present. 1 - User has pressed "Start Game" on the Welcome or Try Again dialog but has not pressed an arrow key to move the snake. 2 - The game is in progress and the snake is moving.
-        * @method setBoardState
-        * @param {Number} state The state of the board.
-        */
+
         me.setBoardState = function(state) {
             boardState = state;
         };
-        /**
-        * @method getGridFoodValue
-        * @return {Number} A number that represents food on a number representation of the playing board.
-        */
+
         me.getGridFoodValue = function() {
             return GRID_FOOD_VALUE;
         };
-        /**
-        * @method getPlayingFieldElement
-        * @return {DOM Element} The div representing the playing field (this is where the snake can move).
-        */
+
         me.getPlayingFieldElement = function() {
             return elmPlayingField;
         };
-        /**
-        * @method setBoardContainer
-        * @param {DOM Element or String} myContainer Sets the container element for the game.
-        */
+
         me.setBoardContainer = function(myContainer) {
             if (typeof myContainer === "string") {
                 myContainer = document.getElementById(myContainer);
@@ -855,36 +698,24 @@ SNAKE.Board = SNAKE.Board || (function() {
 
             me.setupPlayingField();
         };
-        /**
-        * @method getBoardContainer
-        * @return {DOM Element}
-        */
+
         me.getBoardContainer = function() {
             return elmContainer;
         };
-        /**
-        * @method getBlockWidth
-        * @return {Number}
-        */
+
         me.getBlockWidth = function() {
             return blockWidth;
         };
-        /**
-        * @method getBlockHeight
-        * @return {Number}
-        */
+
         me.getBlockHeight = function() {
             return blockHeight;
         };
-        /**
-        * Sets up the playing field.
-        * @method setupPlayingField
-        */
+
         me.setupPlayingField = function () {
 
-            if (!elmPlayingField) {createBoardElements();} // create playing field
+            if (!elmPlayingField) {createBoardElements();} 
 
-            // calculate width of our game container
+            // 
             var cWidth, cHeight;
             var cTop, cLeft;
             if (config.fullScreen === true) {
@@ -900,7 +731,6 @@ SNAKE.Board = SNAKE.Board || (function() {
                 cHeight = config.height;
             }
 
-            // define the dimensions of the board and playing field
             var wEdgeSpace = me.getBlockWidth()*2 + (cWidth % me.getBlockWidth());
             var fWidth = Math.min(maxBoardWidth()-wEdgeSpace,cWidth-wEdgeSpace);
             var hEdgeSpace = me.getBlockHeight()*3 + (cHeight % me.getBlockHeight());
@@ -915,8 +745,6 @@ SNAKE.Board = SNAKE.Board || (function() {
             elmPlayingField.style.width = fWidth + "px";
             elmPlayingField.style.height = fHeight + "px";
 
-            // the math for this will need to change depending on font size, padding, etc
-            // assuming height of 14 (font size) + 8 (padding)
             var bottomPanelHeight = hEdgeSpace - me.getBlockHeight();
             var pLabelTop = me.getBlockHeight() + fHeight + Math.round((bottomPanelHeight - 30)/2) + "px";
 
@@ -930,7 +758,6 @@ SNAKE.Board = SNAKE.Board || (function() {
             elmHighscorePanel.style.top = pLabelTop;
             elmHighscorePanel.style.left = cWidth - 140 + "px";
 
-            // if width is too narrow, hide the about panel
             if (cWidth < 700) {
                 elmAboutPanel.style.display = "none";
             } else {
@@ -945,9 +772,9 @@ SNAKE.Board = SNAKE.Board || (function() {
                 me.grid[row] = [];
                 for (var col = 0; col < numBoardCols; col++) {
                     if (col === 0 || row === 0 || col === (numBoardCols-1) || row === (numBoardRows-1)) {
-                        me.grid[row][col] = 1; // an edge
+                        me.grid[row][col] = 1; 
                     } else {
-                        me.grid[row][col] = 0; // empty space
+                        me.grid[row][col] = 0; 
                     }
                 }
             }
@@ -959,16 +786,14 @@ SNAKE.Board = SNAKE.Board || (function() {
                 var keyNum = (evt.which) ? evt.which : evt.keyCode;
 
                 if (me.getBoardState() === 1) {
-                    if ( !(keyNum >= 37 && keyNum <= 40) && !(keyNum === 87 || keyNum === 65 || keyNum === 83 || keyNum === 68)) {return;} // if not an arrow key, leave
+                    if ( !(keyNum >= 37 && keyNum <= 40) && !(keyNum === 87 || keyNum === 65 || keyNum === 83 || keyNum === 68)) {return;} 
 
-                    // This removes the listener added at the #listenerX line
                     SNAKE.removeEventListener(elmContainer, "keydown", myKeyListener, false);
 
                     myKeyListener = function(evt) {
                         if (!evt) var evt = window.event;
                         var keyNum = (evt.which) ? evt.which : evt.keyCode;
 
-                        //console.log(keyNum);
                         if (keyNum === 32) {
 							if(me.getBoardState()!=0)
                                 me.setPaused(!me.getPaused());
@@ -985,7 +810,7 @@ SNAKE.Board = SNAKE.Board || (function() {
 
                     mySnake.rebirth();
                     mySnake.handleArrowKeys(keyNum);
-                    me.setBoardState(2); // start the game!
+                    me.setBoardState(2); 
                     mySnake.go();
                 }
 
@@ -995,16 +820,9 @@ SNAKE.Board = SNAKE.Board || (function() {
                 return false;
             };
 
-            // Search for #listenerX to see where this is removed
+
             SNAKE.addEventListener( elmContainer, "keydown", myKeyListener, false);
         };
-
-        /**
-        * This method is called when the snake has eaten some food.
-        * @method foodEaten
-        * @return {bool} Whether a new food was able to spawn (true)
-        *   or not (false) after the snake eats food.
-        */
         me.foodEaten = function() {
             elmLengthPanel.innerHTML = "Length: " + mySnake.snakeLength;
             if (mySnake.snakeLength > localStorage.jsSnakeHighScore)
@@ -1017,26 +835,13 @@ SNAKE.Board = SNAKE.Board || (function() {
             }
             return true;
         };
-
-        /**
-        * This method is called when the snake dies.
-        * @method handleDeath
-        */
         me.handleDeath = function() {
             handleEndCondition(elmTryAgain);
         };
 
-        /**
-        * This method is called when the snake wins.
-        * @method handleWin
-        */
         me.handleWin = function () {
             handleEndCondition(elmWin);
         };
-
-        // ---------------------------------------------------------------------
-        // Initialize
-        // ---------------------------------------------------------------------
 
         config.fullScreen = (typeof config.fullScreen === "undefined") ? false : config.fullScreen;
         config.top = (typeof config.top === "undefined") ? 0 : config.top;
@@ -1057,5 +862,5 @@ SNAKE.Board = SNAKE.Board || (function() {
             me.setBoardContainer(config.boardContainer);
         }
 
-    }; // end return function
+    };
 })();  
